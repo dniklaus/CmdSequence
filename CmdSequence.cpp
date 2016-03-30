@@ -41,6 +41,11 @@ CmdSequence::CmdSequence(CmdAdapter* adapter)
 CmdSequence::~CmdSequence()
 { }
 
+void CmdSequence::attachAdapter(CmdAdapter* adapter)
+{
+  m_adapter = adapter;
+}
+
 void CmdSequence::start()
 {
   if (!isRunning())
