@@ -9,7 +9,7 @@
 #define CMDSEQUENCE_H_
 
 class Timer;
-class CmdHandler;
+class Cmd;
 class CmdAdapter;
 
 class CmdSequence
@@ -23,27 +23,27 @@ public:
 
   bool isRunning();
 
-  CmdHandler* currentCmd();
+  Cmd* currentCmd();
 
   void execNextCmd();
 
-  void attach(CmdHandler* cmd);
-  void detach(CmdHandler* cmd);
+  void attach(Cmd* cmd);
+  void detach(Cmd* cmd);
 
   void attachAdapter(CmdAdapter* adapter);
   CmdAdapter* adapter() { return m_adapter; }
 
-  CmdHandler* getFirstCmd();
-  CmdHandler* getNextCmd();
+  Cmd* getFirstCmd();
+  Cmd* getNextCmd();
 
 private:
   void execCmd();
 
 private:
   bool        m_isRunning;
-  CmdHandler*        m_firstCmd;
-  CmdHandler*        m_currentCmd;
-  CmdHandler*        m_cmdListIter;
+  Cmd*        m_firstCmd;
+  Cmd*        m_currentCmd;
+  Cmd*        m_cmdListIter;
   CmdAdapter* m_adapter;
   Timer*      m_timer;
 
