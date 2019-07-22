@@ -18,6 +18,8 @@ protected:
 public:
   virtual ~Cmd();
 
+  void assign(CmdSequence* cmdSeq);
+
   void setTime(unsigned int millis);
   unsigned int getTime();
 

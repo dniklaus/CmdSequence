@@ -7,8 +7,8 @@
 
 #include "Cmd.h"
 
-#include <CmdAdapter.h>
-#include <CmdSequence.h>
+#include "CmdAdapter.h"
+#include "CmdSequence.h"
 
 Cmd::Cmd(CmdSequence* cmdSeq, unsigned int timeMillis, const char* name)
 : m_cmdSeq(cmdSeq)
@@ -58,6 +58,11 @@ const char* Cmd::getName()
 CmdSequence* Cmd::cmdSequence()
 {
   return m_cmdSeq;
+}
+
+void Cmd::assign(CmdSequence* cmdSeq)
+{
+  m_cmdSeq = cmdSeq;
 }
 
 //-----------------------------------------------------------------------------

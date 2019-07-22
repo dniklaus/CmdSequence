@@ -102,6 +102,7 @@ void CmdSequence::execCmd()
 
 void CmdSequence::attach(Cmd* cmd)
 {
+  cmd->assign(this);
   if (0 == m_firstCmd)
   {
     m_firstCmd = cmd;
