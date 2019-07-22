@@ -6,9 +6,9 @@
  */
 
 #include "Timer.h"
-#include "CmdHandler.h"
 #include "CmdAdapter.h"
 #include "CmdSequence.h"
+#include "Cmd.h"
 
 class CmdSeqTimerAdapter : public TimerAdapter
 {
@@ -70,7 +70,7 @@ bool CmdSequence::isRunning()
   return m_isRunning;
 }
 
-CmdHandler* CmdSequence::currentCmd()
+Cmd* CmdSequence::currentCmd()
 {
   return m_currentCmd;
 }
@@ -100,15 +100,16 @@ void CmdSequence::execCmd()
   }
 }
 
-void CmdSequence::attach(CmdHandler* cmd)
+void CmdSequence::attach(Cmd* cmd)
 {
+  cmd->assign(this);
   if (0 == m_firstCmd)
   {
     m_firstCmd = cmd;
   }
   else
   {
-    CmdHandler* next = m_firstCmd;
+    Cmd* next = m_firstCmd;
     while (next->next() != 0)
     {
       next = next->next();
@@ -117,7 +118,7 @@ void CmdSequence::attach(CmdHandler* cmd)
   }
 }
 
-void CmdSequence::detach(CmdHandler* cmd)
+void CmdSequence::detach(Cmd* cmd)
 {
   if (m_firstCmd == cmd)
   {
@@ -125,7 +126,7 @@ void CmdSequence::detach(CmdHandler* cmd)
   }
   else
   {
-    CmdHandler* next = m_firstCmd;
+    Cmd* next = m_firstCmd;
     while ((next != 0) && next->next() != cmd)
     {
       next = next->next();
@@ -137,13 +138,13 @@ void CmdSequence::detach(CmdHandler* cmd)
   }
 }
 
-CmdHandler* CmdSequence::getFirstCmd()
+Cmd* CmdSequence::getFirstCmd()
 {
   m_cmdListIter = m_firstCmd;
   return m_cmdListIter;
 }
 
-CmdHandler* CmdSequence::getNextCmd()
+Cmd* CmdSequence::getNextCmd()
 {
   m_cmdListIter = m_cmdListIter->next();
   return m_cmdListIter;

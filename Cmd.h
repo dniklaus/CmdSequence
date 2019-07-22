@@ -1,5 +1,5 @@
 /*
- * CmdHandler.h
+ * Cmd.h
  *
  *  Created on: 10.03.2014
  *      Author: niklausd
@@ -10,21 +10,23 @@
 
 class CmdSequence;
 
-class CmdHandler
+class Cmd
 {
 protected:
-  CmdHandler(CmdSequence* cmdSeq, unsigned int timeMillis, const char* name);
+  Cmd(CmdSequence* cmdSeq, unsigned int timeMillis, const char* name);
 
 public:
-  virtual ~CmdHandler();
+  virtual ~Cmd();
+
+  void assign(CmdSequence* cmdSeq);
 
   void setTime(unsigned int millis);
   unsigned int getTime();
 
   virtual void execute() = 0;
 
-  CmdHandler* next();
-  void setNext(CmdHandler* next);
+  Cmd* next();
+  void setNext(Cmd* next);
 
   const char* getName();
 
@@ -34,16 +36,16 @@ private:
   CmdSequence*  m_cmdSeq;
   unsigned int  m_timeMillis;
   const char*   m_name;
-  CmdHandler*   m_next;
+  Cmd*   m_next;
 
 private: // forbidden default functions
-  CmdHandler& operator = (const CmdHandler& src); // assignment operator
-  CmdHandler(const CmdHandler& src);              // copy constructor
+  Cmd& operator = (const Cmd& src); // assignment operator
+  Cmd(const Cmd& src);              // copy constructor
 };
 
 //-----------------------------------------------------------------------------
 
-class CmdStop : public CmdHandler
+class CmdStop : public Cmd
 {
 public:
   CmdStop(CmdSequence* cmdSeq, unsigned int timeMillis);

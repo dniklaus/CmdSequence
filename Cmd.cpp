@@ -5,11 +5,12 @@
  *      Author: niklausd
  */
 
-#include <CmdAdapter.h>
-#include <CmdHandler.h>
-#include <CmdSequence.h>
+#include "Cmd.h"
 
-CmdHandler::CmdHandler(CmdSequence* cmdSeq, unsigned int timeMillis, const char* name)
+#include "CmdAdapter.h"
+#include "CmdSequence.h"
+
+Cmd::Cmd(CmdSequence* cmdSeq, unsigned int timeMillis, const char* name)
 : m_cmdSeq(cmdSeq)
 , m_timeMillis(timeMillis)
 , m_name(name)
@@ -21,7 +22,7 @@ CmdHandler::CmdHandler(CmdSequence* cmdSeq, unsigned int timeMillis, const char*
   }
 }
 
-CmdHandler::~CmdHandler()
+Cmd::~Cmd()
 {
   if (0 != m_cmdSeq)
   {
@@ -29,40 +30,45 @@ CmdHandler::~CmdHandler()
   }
 }
 
-void CmdHandler::setTime(unsigned int timeMillis)
+void Cmd::setTime(unsigned int timeMillis)
 {
   m_timeMillis = timeMillis;
 }
 
-unsigned int CmdHandler::getTime()
+unsigned int Cmd::getTime()
 {
   return m_timeMillis;
 }
 
-CmdHandler* CmdHandler::next()
+Cmd* Cmd::next()
 {
   return m_next;
 }
 
-void CmdHandler::setNext(CmdHandler* next)
+void Cmd::setNext(Cmd* next)
 {
   m_next = next;
 }
 
-const char* CmdHandler::getName()
+const char* Cmd::getName()
 {
   return m_name;
 }
 
-CmdSequence* CmdHandler::cmdSequence()
+CmdSequence* Cmd::cmdSequence()
 {
   return m_cmdSeq;
+}
+
+void Cmd::assign(CmdSequence* cmdSeq)
+{
+  m_cmdSeq = cmdSeq;
 }
 
 //-----------------------------------------------------------------------------
 
 CmdStop::CmdStop(CmdSequence* cmdSeq, unsigned int timeMillis)
-: CmdHandler(cmdSeq, timeMillis, "CmdStop")
+: Cmd(cmdSeq, timeMillis, "CmdStop")
 { }
 
 void CmdStop::execute()
