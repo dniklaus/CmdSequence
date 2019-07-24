@@ -24,6 +24,7 @@ public:
   unsigned int getTime();
 
   virtual void execute() = 0;
+  virtual void leave() { }
 
   Cmd* next();
   void setNext(Cmd* next);

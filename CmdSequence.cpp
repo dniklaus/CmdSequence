@@ -77,6 +77,7 @@ Cmd* CmdSequence::currentCmd()
 
 void CmdSequence::execNextCmd()
 {
+  m_currentCmd->leave();
   m_currentCmd = m_currentCmd->next();
   execCmd();
 }
