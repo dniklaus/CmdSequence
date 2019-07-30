@@ -10,7 +10,7 @@
 #include "CmdAdapter.h"
 #include "CmdSequence.h"
 
-Cmd::Cmd(CmdSequence* cmdSeq, unsigned int timeMillis, const char* name)
+Cmd::Cmd(CmdSequence* cmdSeq, long int timeMillis, const char* name)
 : m_cmdSeq(cmdSeq)
 , m_timeMillis(timeMillis)
 , m_name(name)
@@ -30,12 +30,12 @@ Cmd::~Cmd()
   }
 }
 
-void Cmd::setTime(unsigned int timeMillis)
+void Cmd::setTime(long int millis)
 {
-  m_timeMillis = timeMillis;
+  m_timeMillis = millis;
 }
 
-unsigned int Cmd::getTime()
+long int Cmd::getTime()
 {
   return m_timeMillis;
 }
