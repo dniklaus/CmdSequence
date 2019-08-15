@@ -10,6 +10,8 @@
 #include "CmdSequence.h"
 #include "Cmd.h"
 
+//-----------------------------------------------------------------------------
+
 class CmdSeqTimerAdapter : public TimerAdapter
 {
 public:
@@ -28,6 +30,8 @@ public:
 private:
   CmdSequence* m_cmdSeq;
 };
+
+//-----------------------------------------------------------------------------
 
 CmdSequence::CmdSequence(CmdAdapter* adapter)
 : m_isRunning(false)
@@ -77,7 +81,8 @@ Cmd* CmdSequence::currentCmd()
 
 void CmdSequence::execNextCmd()
 {
-  m_currentCmd = m_currentCmd->next();
+  m_currentCmd->leave();  // leave the current command
+  m_currentCmd = m_currentCmd->next(); // proceed to the next command
   execCmd();
 }
 
@@ -86,7 +91,19 @@ void CmdSequence::execCmd()
   if ((0 != m_currentCmd) && (0 != m_timer))
   {
     m_isRunning = true;
-    m_timer->startTimer(m_currentCmd->getTime());
+    if (m_currentCmd->getTime() >= 0)
+    {
+      // time = 0: do not wait, immediately proceed to the next command of the sequence since the timer will expire immediately
+      // time > 0: wait in this command the specified time [ms]
+      unsigned long int currentCmdTime = static_cast<unsigned long int>(m_currentCmd->getTime());
+
+      m_timer->startTimer(currentCmdTime);
+    }
+    // else
+    // {
+    //   // time < 0: wait forever in this command, since the timer is not started,
+    //   //           which would make the sequence proceed to the next command when expired.
+    // }
     m_currentCmd->execute();
   }
   else
