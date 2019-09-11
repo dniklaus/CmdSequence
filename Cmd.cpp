@@ -67,7 +67,7 @@ void Cmd::assign(CmdSequence* cmdSeq)
 
 //-----------------------------------------------------------------------------
 
-CmdStop::CmdStop(CmdSequence* cmdSeq, unsigned int timeMillis)
+CmdStop::CmdStop(CmdSequence* cmdSeq, long int timeMillis)
 : Cmd(cmdSeq, timeMillis, "CmdStop")
 { }
 

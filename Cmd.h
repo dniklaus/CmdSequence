@@ -81,7 +81,7 @@ private: // forbidden default functions
 class CmdStop : public Cmd
 {
 public:
-  CmdStop(CmdSequence* cmdSeq, unsigned int timeMillis);
+  CmdStop(CmdSequence* cmdSeq, long int timeMillis);
   virtual ~CmdStop() { }
   virtual void execute();
 

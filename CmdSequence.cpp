@@ -43,7 +43,13 @@ CmdSequence::CmdSequence(CmdAdapter* adapter)
 { }
 
 CmdSequence::~CmdSequence()
-{ }
+{
+  delete m_timer->adapter();
+  m_timer->attachAdapter(0);
+
+  delete m_timer;
+  m_timer = 0;
+}
 
 void CmdSequence::attachAdapter(CmdAdapter* adapter)
 {
