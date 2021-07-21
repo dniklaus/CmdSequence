@@ -5,17 +5,17 @@
  *      Author: niklausd
  */
 
-#include "Timer.h"
+#include "SpinTimer.h"
 #include "CmdAdapter.h"
 #include "CmdSequence.h"
 #include "Cmd.h"
 
 //-----------------------------------------------------------------------------
 
-class CmdSeqTimerAdapter : public TimerAdapter
+class CmdSeqTimerAction : public SpinTimerAction
 {
 public:
-  CmdSeqTimerAdapter(CmdSequence* cmdSeq)
+  CmdSeqTimerAction(CmdSequence* cmdSeq)
   : m_cmdSeq(cmdSeq)
   { }
 
@@ -39,13 +39,13 @@ CmdSequence::CmdSequence(CmdAdapter* adapter)
 , m_currentCmd(0)
 , m_cmdListIter(0)
 , m_adapter(adapter)
-, m_timer(new Timer(new CmdSeqTimerAdapter(this), Timer::IS_NON_RECURRING))
+, m_timer(new SpinTimer(0, new CmdSeqTimerAction(this), SpinTimer::IS_NON_RECURRING))
 { }
 
 CmdSequence::~CmdSequence()
 {
-  delete m_timer->adapter();
-  m_timer->attachAdapter(0);
+  delete m_timer->action();
+  m_timer->attachAction(0);
 
   delete m_timer;
   m_timer = 0;
@@ -67,7 +67,7 @@ void CmdSequence::start()
 
 void CmdSequence::stop()
 {
-  m_timer->cancelTimer();
+  m_timer->cancel();
   if (0 != adapter())
   {
     adapter()->stopAction();
@@ -103,7 +103,7 @@ void CmdSequence::execCmd()
       // time > 0: wait in this command the specified time [ms]
       unsigned long int currentCmdTime = static_cast<unsigned long int>(m_currentCmd->getTime());
 
-      m_timer->startTimer(currentCmdTime);
+      m_timer->start(currentCmdTime);
     }
     // else
     // {
@@ -117,7 +117,7 @@ void CmdSequence::execCmd()
     m_isRunning = false;
     if (0 != m_timer)
     {
-      m_timer->cancelTimer();
+      m_timer->cancel();
     }
     m_currentCmd = m_firstCmd;
   }
