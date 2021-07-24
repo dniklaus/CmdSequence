@@ -8,14 +8,14 @@
 #ifndef CMDSEQUENCE_H_
 #define CMDSEQUENCE_H_
 
-class Timer;
+class SpinTimer;
 class Cmd;
 class CmdAdapter;
 
 class CmdSequence
 {
 public:
-  CmdSequence(CmdAdapter* adapter);
+  CmdSequence(CmdAdapter* adapter = 0);
   virtual ~CmdSequence();
 
   void start();
@@ -45,7 +45,7 @@ private:
   Cmd*        m_currentCmd;
   Cmd*        m_cmdListIter;
   CmdAdapter* m_adapter;
-  Timer*      m_timer;
+  SpinTimer*  m_timer;
 
 private: // forbidden default functions
   CmdSequence& operator = (const CmdSequence& );  // assignment operator
