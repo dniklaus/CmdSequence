@@ -87,6 +87,7 @@ Cmd* CmdSequence::currentCmd()
 
 void CmdSequence::execNextCmd()
 {
+  m_timer->cancel();      // stop timer for the case the previous command was not finished by timeout
   m_currentCmd->leave();  // leave the current command
   m_currentCmd = m_currentCmd->next(); // proceed to the next command
   execCmd();
