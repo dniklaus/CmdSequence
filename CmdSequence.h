@@ -15,7 +15,7 @@ class CmdAdapter;
 class CmdSequence
 {
 public:
-  CmdSequence(CmdAdapter* adapter);
+  CmdSequence(CmdAdapter* adapter = 0);
   virtual ~CmdSequence();
 
   void start();
