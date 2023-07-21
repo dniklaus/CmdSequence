@@ -87,9 +87,15 @@ Cmd* CmdSequence::currentCmd()
 
 void CmdSequence::execNextCmd()
 {
-  m_timer->cancel();      // stop timer for the case the previous command was not finished by timeout
-  m_currentCmd->leave();  // leave the current command
-  m_currentCmd = m_currentCmd->next(); // proceed to the next command
+  if (0 != m_timer)
+  {
+    m_timer->cancel();      // stop timer for the case the current command has not been finished by timeout
+  }
+  if (0 != m_currentCmd)
+  {
+    m_currentCmd->leave();  // leave the current command
+    m_currentCmd = m_currentCmd->next(); // proceed to the next command
+  }
   execCmd();
 }
 
@@ -109,7 +115,7 @@ void CmdSequence::execCmd()
     // else
     // {
     //   // time < 0: wait forever in this command, since the timer is not started,
-    //   //           which would make the sequence proceed to the next command when expired.
+    //   //           => this makes the sequence only proceed to the next command on an explicit call to the method CmdSequence::execNextCmd().
     // }
     m_currentCmd->execute();
   }
@@ -126,7 +132,6 @@ void CmdSequence::execCmd()
 
 void CmdSequence::attach(Cmd* cmd)
 {
-  cmd->assign(this);
   if (0 == m_firstCmd)
   {
     m_firstCmd = cmd;
