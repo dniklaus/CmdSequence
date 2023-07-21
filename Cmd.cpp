@@ -63,6 +63,11 @@ CmdSequence* Cmd::cmdSequence()
 void Cmd::assign(CmdSequence* cmdSeq)
 {
   m_cmdSeq = cmdSeq;
+  if (0 != cmdSeq)
+  {
+    cmdSeq->attach(this);
+  }
+
 }
 
 //-----------------------------------------------------------------------------
