@@ -58,12 +58,25 @@ public:
    */
   virtual void leave() { }
 
+  /**
+   * @brief Get the next element from the list.
+   * @return Next Cmd object in the List.
+   */
   Cmd* next();
+
+  /**
+   * @brief Set the Next object in the list.
+   * @param next Next Cmd object to be se
+   */
   void setNext(Cmd* next);
 
+  /**
+   * @brief Get the Name of the Cmd object
+   * @return const char* Name of the command object.
+   */
   const char* getName();
 
-/**
+  /**
    * @brief Check if the Cmd object's name is as the provided parameter.
    * @param name Name to be checked for.
    * @return true The Cmd object's name is as the provided parameter.

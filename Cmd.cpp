@@ -5,10 +5,10 @@
  *      Author: niklausd
  */
 
-#include "Cmd.h"
-
+#include <string.h>
 #include "CmdAdapter.h"
 #include "CmdSequence.h"
+#include "Cmd.h"
 
 Cmd::Cmd(CmdSequence* cmdSeq, long int timeMillis, const char* name)
 : m_cmdSeq(cmdSeq)
@@ -80,7 +80,6 @@ void Cmd::assign(CmdSequence* cmdSeq)
   {
     cmdSeq->attach(this);
   }
-
 }
 
 //-----------------------------------------------------------------------------
