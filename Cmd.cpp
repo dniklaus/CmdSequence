@@ -55,6 +55,19 @@ const char* Cmd::getName()
   return m_name;
 }
 
+bool Cmd::isName(const char* name)
+{
+  bool isTheSame = false;
+  if (strlen(m_name) == strlen(name))
+  {
+    if (strncmp(m_name, name, strlen(name)) == 0)
+    {
+      isTheSame = true;
+    }
+  }
+  return isTheSame;
+}
+
 CmdSequence* Cmd::cmdSequence()
 {
   return m_cmdSeq;

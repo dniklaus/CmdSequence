@@ -63,6 +63,18 @@ public:
 
   const char* getName();
 
+/**
+   * @brief Check if the Cmd object's name is as the provided parameter.
+   * @param name Name to be checked for.
+   * @return true The Cmd object's name is as the provided parameter.
+   * @return false The Cmd object's name is not as the provided parameter.
+   */
+  bool isName(const char* name);
+
+  /**
+   * @brief Get CmdSequnece object that has been assigned to this command.
+   * @return CmdSequence object that has been assigned to this command.
+   */
   CmdSequence* cmdSequence();
 
 private:
