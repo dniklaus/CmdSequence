@@ -98,3 +98,12 @@ void CmdStop::execute()
 }
 
 //-----------------------------------------------------------------------------
+
+CmdWait::CmdWait(CmdSequence* cmdSeq, long int timeMillis)
+: Cmd(cmdSeq, timeMillis, "CmdWait")
+{ }
+
+void CmdWait::execute()
+{ }
+
+//-----------------------------------------------------------------------------

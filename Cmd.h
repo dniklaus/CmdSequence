@@ -104,4 +104,18 @@ private: // forbidden default functions
 
 //-----------------------------------------------------------------------------
 
+class CmdWait : public Cmd
+{
+public:
+  CmdWait(CmdSequence* cmdSeq, long int timeMillis);
+  virtual ~CmdWait() { }
+  virtual void execute();
+
+private: // forbidden default functions
+  CmdWait& operator = (const CmdWait& src); // assignment operator
+  CmdWait(const CmdWait& src);              // copy constructor
+};
+
+//-----------------------------------------------------------------------------
+
 #endif /* CMDHANDLER_H_ */
