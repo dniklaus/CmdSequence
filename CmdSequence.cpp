@@ -5,55 +5,34 @@
  *      Author: niklausd
  */
 
-#include "SpinTimer.h"
+#include <stdint.h>
+#include "CmdSeqTimer.h"
 #include "CmdAdapter.h"
-#include "CmdSequence.h"
 #include "Cmd.h"
+#include "CmdSequence.h"
 
-//-----------------------------------------------------------------------------
+const int32_t CmdSequence::WaitForever = -1;   /*<! wait "forever" */
+const int32_t CmdSequence::DoNotWait = 0;      /*<! do not wait */
 
-class CmdSeqTimerAction : public SpinTimerAction
-{
-public:
-  CmdSeqTimerAction(CmdSequence* cmdSeq)
-  : m_cmdSeq(cmdSeq)
-  { }
-
-  void timeExpired()
-  {
-    if (0 != m_cmdSeq)
-    {
-      m_cmdSeq->execNextCmd();
-    }
-  }
-
-private:
-  CmdSequence* m_cmdSeq;
-};
-
-//-----------------------------------------------------------------------------
-
-CmdSequence::CmdSequence(CmdAdapter* adapter)
+CmdSequence::CmdSequence()
 : m_isRunning(false)
 , m_firstCmd(0)
 , m_currentCmd(0)
+, m_nextCmd(0)
 , m_cmdListIter(0)
-, m_adapter(adapter)
-, m_timer(new SpinTimer(0, new CmdSeqTimerAction(this), SpinTimer::IS_NON_RECURRING))
+, m_adapter(0)
+, m_timer(0)
 { }
 
 CmdSequence::~CmdSequence()
 {
-  delete m_timer->action();
-  m_timer->attachAction(0);
-
-  delete m_timer;
-  m_timer = 0;
-}
-
-void CmdSequence::attachAdapter(CmdAdapter* adapter)
-{
-  m_adapter = adapter;
+  // unassign all attached cmd objects 
+  Cmd* cmd = getFirstCmd();
+  while(0 != cmd)
+  {
+      cmd->assign((CmdSequence*)0);
+      cmd = getNextCmd();
+  }
 }
 
 void CmdSequence::start()
@@ -67,7 +46,10 @@ void CmdSequence::start()
 
 void CmdSequence::stop()
 {
-  m_timer->cancel();
+  if (0 != m_timer)
+  {
+    m_timer->cancel();
+  }
   if (0 != adapter())
   {
     adapter()->stopAction();
@@ -103,24 +85,33 @@ void CmdSequence::execCmd()
 {
   if ((0 != m_currentCmd) && (0 != m_timer))
   {
-    m_isRunning = true;
-    if (m_currentCmd->getTime() >= 0)
+    int32_t currentCmdTime = m_currentCmd->getTime();
+    if (currentCmdTime > WaitForever)
     {
       // time = 0: do not wait, immediately proceed to the next command of the sequence since the timer will expire immediately
       // time > 0: wait in this command the specified time [ms]
-      unsigned long int currentCmdTime = static_cast<unsigned long int>(m_currentCmd->getTime());
-
-      m_timer->start(currentCmdTime);
+      m_timer->start(static_cast<uint32_t>(currentCmdTime));
     }
     // else
     // {
     //   // time < 0: wait forever in this command, since the timer is not started,
     //   //           => this makes the sequence only proceed to the next command on an explicit call to the method CmdSequence::execNextCmd().
     // }
-    m_currentCmd->execute();
+
+    m_isRunning = true;
+
+    m_nextCmd = m_currentCmd->next();   // prepare for pre-execution of next cmd
+
+    m_currentCmd->execute();            // execute the current command
+
+    if (0 != m_nextCmd)
+    {
+      m_nextCmd->preExec();             // pre-execute the next command
+    }
   }
   else
   {
+    // end of the sequence (or no timer error)
     m_isRunning = false;
     if (0 != m_timer)
     {
@@ -165,6 +156,20 @@ void CmdSequence::detach(Cmd* cmd)
       next->setNext(cmd->next());
     }
   }
+}
+
+void CmdSequence::assignAdapter(CmdAdapter* adapter)
+{
+  m_adapter = adapter;
+  if (0 != m_adapter)
+  {
+    m_adapter->assignCmdSequence(this);
+  }
+}
+
+void CmdSequence::assignTimer(CmdSeqTimer* timer)
+{
+  m_timer = timer;
 }
 
 Cmd* CmdSequence::getFirstCmd()
