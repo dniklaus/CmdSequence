@@ -14,6 +14,11 @@ public:
   CmdAdapter();
   virtual ~CmdAdapter();
   virtual void stopAction() { }
+  void assignCmdSequence(CmdSequence* cmdSeq);
+  CmdSequence* cmdSequence() { return m_seq; }
+
+private:
+  CmdSequence* m_seq;  /**< Pointer to the assigned command sequence. */
 
 private: // forbidden default functions
   CmdAdapter& operator= (const CmdAdapter& src);  // assignment operator

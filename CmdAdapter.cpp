@@ -13,3 +13,7 @@ CmdAdapter::CmdAdapter()
 CmdAdapter::~CmdAdapter()
 { }
 
+CmdAdapter::assignCmdSequence(CmdSequence* cmdSeq)
+{
+  m_seq = cmdSeq;
+}       
