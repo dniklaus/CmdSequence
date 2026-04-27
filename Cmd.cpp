@@ -10,39 +10,86 @@
 #include "CmdSequence.h"
 #include "Cmd.h"
 
-Cmd::Cmd(CmdSequence* cmdSeq, long int timeMillis, const char* name)
-: m_cmdSeq(cmdSeq)
-, m_timeMillis(timeMillis)
-, m_name(name)
-, m_next(0)
+Cmd::Cmd(CmdSequence* cmdSeq, int32_t timeMicros, const char* name, const char* branchName)
+  : m_cmdSeq(cmdSeq)
+  , m_timeMicros(timeMicros)
+  , m_name(0)
+  , m_next(0)
+  , m_branch(0)
+  , m_doBranch(false)
 {
-  if (0 != cmdSeq)
-  {
-    cmdSeq->attach(this);
-  }
+  uint8_t nameLen = strlen(name) + 1;
+  m_name = new char[nameLen];
+  strncpy(m_name, name, nameLen);
+
+  uint8_t branchNameLen = strlen(branchName) + 1;
+  m_branchName = new char[branchNameLen];
+  strncpy(m_branchName, branchName, branchNameLen);
+
+  assign(cmdSeq);
 }
 
 Cmd::~Cmd()
 {
-  if (0 != m_cmdSeq)
+  assign((CmdSequence*)0);
+
+  delete [] m_name;
+  m_name = 0;
+
+  delete [] m_branchName;
+  m_branchName = 0;
+}
+
+void Cmd::assign(CmdSequence* cmdSeq)
+{
+  if (0 != cmdSeq)
   {
-    m_cmdSeq->detach(this);
+    // attach this Cmd to the cmdSeq
+    cmdSeq->attach(this);
   }
+  else 
+  {
+    if (0 != m_cmdSeq)
+    {
+      // detach this Cmd from the formerly attached cmdSeq
+      m_cmdSeq->detach(this);
+    }
+  }
+  m_cmdSeq = cmdSeq;
 }
 
-void Cmd::setTime(long int millis)
+void Cmd::setTime(int32_t timeMicros)
 {
-  m_timeMillis = millis;
+  m_timeMicros = timeMicros;
 }
 
-long int Cmd::getTime()
+int32_t Cmd::getTime()
 {
-  return m_timeMillis;
+  return m_timeMicros;
 }
 
 Cmd* Cmd::next()
 {
-  return m_next;
+    bool mustBranch = false;
+    // evaluate branch condition
+    if (0 == m_branch)
+    {
+        if (isBranchName("exit"))
+        {
+            // explicit exit: null ptr is intended!
+            mustBranch = m_doBranch;
+            m_doBranch = false;      // reset branch condition flag
+        }
+    }
+    else
+    {
+        mustBranch = m_doBranch;
+        m_doBranch = false;          // reset branch condition flag
+    }
+    
+    Cmd* selectedNext = mustBranch ? m_branch : m_next;
+    // return semantic next pointer according to branch condition
+    return selectedNext;
 }
 
 void Cmd::setNext(Cmd* next)
@@ -73,23 +120,52 @@ CmdSequence* Cmd::cmdSequence()
   return m_cmdSeq;
 }
 
-void Cmd::assign(CmdSequence* cmdSeq)
+char* Cmd::getBranchName()
 {
-  m_cmdSeq = cmdSeq;
-  if (0 != cmdSeq)
-  {
-    cmdSeq->attach(this);
-  }
+    return m_branchName;
+}
+
+bool Cmd::isBranchName(const char* branchName)
+{
+    bool isTheSame = false;
+    if (strlen(m_branchName) == strlen(branchName))
+    {
+        if (strncmp(m_branchName, branchName, strlen(branchName)) == 0)
+        {
+            isTheSame = true;
+        }
+    }
+    return isTheSame;
+}
+
+Cmd* Cmd::branch()
+{
+    return m_branch;
+}
+
+void Cmd::setBranch(Cmd* branch)
+{
+    m_branch = branch;
+}
+
+bool Cmd::doBranch() const
+{
+    return m_doBranch;
+}
+
+void Cmd::setDoBranch(bool doBranch)
+{
+    m_doBranch = doBranch;
 }
 
 //-----------------------------------------------------------------------------
 
-CmdStop::CmdStop(CmdSequence* cmdSeq, long int timeMillis)
-: Cmd(cmdSeq, timeMillis, "CmdStop")
+CmdStop::CmdStop(CmdSequence* cmdSeq, int32_t timeMicros)
+: Cmd(cmdSeq, timeMicros, "CmdStop")
 { }
 
 void CmdStop::execute()
-{
+{ 
   if ((0 != cmdSequence()) && (0 != cmdSequence()->adapter()))
   {
     cmdSequence()->adapter()->stopAction();
@@ -98,8 +174,8 @@ void CmdStop::execute()
 
 //-----------------------------------------------------------------------------
 
-CmdWait::CmdWait(CmdSequence* cmdSeq, long int timeMillis)
-: Cmd(cmdSeq, timeMillis, "CmdWait")
+CmdWait::CmdWait(CmdSequence* cmdSeq, int32_t timeMicros)
+: Cmd(cmdSeq, timeMicros, "CmdWait")
 { }
 
 void CmdWait::execute()
