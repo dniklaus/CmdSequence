@@ -8,14 +8,15 @@
 #ifndef CMDADAPTER_H_
 #define CMDADAPTER_H_
 
+class CmdSequence;
 class CmdAdapter
 {
 public:
-  CmdAdapter();
-  virtual ~CmdAdapter();
+  CmdAdapter() = default;
+  virtual ~CmdAdapter() = default;
   virtual void stopAction() { }
   void assignCmdSequence(CmdSequence* cmdSeq);
-  CmdSequence* cmdSequence() { return m_seq; }
+  CmdSequence* cmdSequence() const;
 
 private:
   CmdSequence* m_seq;  /**< Pointer to the assigned command sequence. */

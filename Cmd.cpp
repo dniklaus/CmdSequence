@@ -20,12 +20,11 @@ Cmd::Cmd(CmdSequence* cmdSeq, int32_t timeMicros, const char* name, const char* 
 {
   uint8_t nameLen = strlen(name) + 1;
   m_name = new char[nameLen];
-  strncpy(m_name, name, nameLen);
+  strncpy((char*)m_name, name, nameLen);
 
   uint8_t branchNameLen = strlen(branchName) + 1;
   m_branchName = new char[branchNameLen];
-  strncpy(m_branchName, branchName, branchNameLen);
-
+  strncpy((char*)m_branchName, branchName, branchNameLen);
   assign(cmdSeq);
 }
 
@@ -63,7 +62,7 @@ void Cmd::setTime(int32_t timeMicros)
   m_timeMicros = timeMicros;
 }
 
-int32_t Cmd::getTime()
+int32_t Cmd::getTime() const
 {
   return m_timeMicros;
 }
@@ -97,12 +96,12 @@ void Cmd::setNext(Cmd* next)
   m_next = next;
 }
 
-const char* Cmd::getName()
+const char* Cmd::getName() const
 {
   return m_name;
 }
 
-bool Cmd::isName(const char* name)
+bool Cmd::isName(const char* name) const
 {
   bool isTheSame = false;
   if (strlen(m_name) == strlen(name))
@@ -115,17 +114,17 @@ bool Cmd::isName(const char* name)
   return isTheSame;
 }
 
-CmdSequence* Cmd::cmdSequence()
+CmdSequence* Cmd::cmdSequence() const
 {
   return m_cmdSeq;
 }
 
-char* Cmd::getBranchName()
+const char* Cmd::getBranchName() const
 {
     return m_branchName;
 }
 
-bool Cmd::isBranchName(const char* branchName)
+bool Cmd::isBranchName(const char* branchName) const
 {
     bool isTheSame = false;
     if (strlen(m_branchName) == strlen(branchName))
@@ -138,7 +137,7 @@ bool Cmd::isBranchName(const char* branchName)
     return isTheSame;
 }
 
-Cmd* Cmd::branch()
+Cmd* Cmd::branch() const
 {
     return m_branch;
 }
@@ -161,7 +160,7 @@ void Cmd::setDoBranch(bool doBranch)
 //-----------------------------------------------------------------------------
 
 CmdStop::CmdStop(CmdSequence* cmdSeq, int32_t timeMicros)
-: Cmd(cmdSeq, timeMicros, "CmdStop")
+: Cmd(cmdSeq, timeMicros, "CmdStop", "")
 { }
 
 void CmdStop::execute()
@@ -175,7 +174,7 @@ void CmdStop::execute()
 //-----------------------------------------------------------------------------
 
 CmdWait::CmdWait(CmdSequence* cmdSeq, int32_t timeMicros)
-: Cmd(cmdSeq, timeMicros, "CmdWait")
+: Cmd(cmdSeq, timeMicros, "CmdWait", "")
 { }
 
 void CmdWait::execute()

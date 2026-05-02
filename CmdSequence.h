@@ -8,19 +8,19 @@
 #ifndef CMDSEQUENCE_H_
 #define CMDSEQUENCE_H_
 
+#include <stdint.h>
 #include <stdbool.h>
 
 class CmdSeqTimer;
 class Cmd;
 class CmdAdapter;
-
 class CmdSequence
 {
 public:
   static const int32_t WaitForever;   /**< wait "forever" */
   static const int32_t DoNotWait;     /**< do not wait */
 
-  CmdSequence() = default;
+  explicit CmdSequence();
   virtual ~CmdSequence();
 
   /**

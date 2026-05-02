@@ -5,15 +5,15 @@
  *      Author: niklausd
  */
 
+#include "CmdSequence.h"
 #include "CmdAdapter.h"
 
-CmdAdapter::CmdAdapter()
-{ }
-
-CmdAdapter::~CmdAdapter()
-{ }
-
-CmdAdapter::assignCmdSequence(CmdSequence* cmdSeq)
+void CmdAdapter::assignCmdSequence(CmdSequence* cmdSeq)
 {
   m_seq = cmdSeq;
 }       
+
+CmdSequence* CmdAdapter::cmdSequence() const
+{
+  return m_seq;
+}

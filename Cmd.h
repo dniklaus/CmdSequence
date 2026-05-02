@@ -26,7 +26,7 @@ protected:
    * @param name Name of the current command.
    * @param branchName Name of the branch command to jump to; if no branching is desired, provide an empty string ("").
    */
-  explicit Cmd(CmdSequence* cmdSeq, int32_t timeMicros, const char* name, const char* branchName) = default;
+  explicit Cmd(CmdSequence* cmdSeq, int32_t timeMicros, const char* name, const char* branchName);
 
 public:
   virtual ~Cmd();
@@ -78,7 +78,7 @@ public:
    * @brief Get the time the current command shall wait until the next one would be started.
    * @return timeMicros Time to wait [us] (<0: wait forever in this command, 0: do not wait, >0: wait in this command the specified time [us]).
    */
-  int32_t getTime();
+  int32_t getTime() const;
 
   /**
    * @brief Set the Next object in the sequence.
@@ -90,57 +90,57 @@ public:
    * @brief Get the Name of the Cmd object
    * @return const char* Name of the command object.
    */
-  const char* getName();
+  const char* getName() const;
 
   /**
    * @brief Check if the Cmd object's name is as the provided parameter.
    * @param name Name to be checked for.
    * @return true if the Cmd object's name is as the provided parameter, false otherwise.
    */
-  bool isName(const char* name);
+  bool isName(const char* name) const;
 
   /**
    * @brief Get CmdSequence object this command object has been assigned to.
    * @return Pointer to CmdSequence object this command object has been assigned to.
    */
-  CmdSequence* cmdSequence();
+  CmdSequence* cmdSequence() const;
 
   /**
    * @brief Get the name of the command to branch to.
    * @return Name of the branch command, empty string if no branch is configured.
    */
-  char* (*getBranchName)(Cmd const* const me);
+  const char* getBranchName() const;
 
   /**
    * @brief Check if the branch name matches the given name.
    * @param name Name to check.
    * @return true if the given name matches the Cmd object's branch name, false otherwise.
    */
-  bool (*isBranchName)(Cmd const* const me, const char* name);
+  bool isBranchName(const char* branchName) const;
 
   /**
    * @brief Get the command to branch to.
    * @return Pointer to branch command.
    */
-  Cmd* (*branch)(Cmd const* const me);
+  Cmd* branch() const;
 
   /**
    * @brief Set the command to branch to.
    * @param branch Pointer to branch command.
    */
-  void (*setBranch)(Cmd* const me, Cmd* branch);
+  void setBranch(Cmd* branch);
 
   /**
    * @brief Get the branching status.
    * @return true if branching shall happen, false otherwise.
    */
-  bool (*doBranch)(Cmd const* const me);
+  bool doBranch() const;
 
   /**
    * @brief Set the branching status.
    * @param doBranch New branching status.
    */
-  void (*setDoBranch)(Cmd* const me, bool doBranch);
+  void setDoBranch(bool doBranch);
 
 private:
   CmdSequence*  m_cmdSeq;      /**< Pointer to the assigned command sequence. */
@@ -164,7 +164,7 @@ class CmdStop : public Cmd
 public:
   CmdStop(CmdSequence* cmdSeq, int32_t timeMicros);
   virtual ~CmdStop() { }
-  virtual void execute();
+  void execute() override;
 
 private: // forbidden default functions
   CmdStop& operator = (const CmdStop& src); // assignment operator

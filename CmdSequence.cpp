@@ -5,7 +5,6 @@
  *      Author: niklausd
  */
 
-#include <stdint.h>
 #include "CmdSeqTimer.h"
 #include "CmdAdapter.h"
 #include "Cmd.h"
@@ -180,6 +179,9 @@ Cmd* CmdSequence::getFirstCmd()
 
 Cmd* CmdSequence::getNextCmd()
 {
-  m_cmdListIter = m_cmdListIter->next();
+  if (0 != m_cmdListIter)
+  {
+    m_cmdListIter = m_cmdListIter->next();
+  }
   return m_cmdListIter;
 }
