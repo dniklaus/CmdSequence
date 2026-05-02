@@ -21,8 +21,8 @@ private:
   CmdSequence* m_seq;  /**< Pointer to the assigned command sequence. */
 
 private: // forbidden default functions
-  CmdAdapter& operator= (const CmdAdapter& src);  // assignment operator
-  CmdAdapter(const CmdAdapter& src);              // copy constructor
+  CmdAdapter& operator= (const CmdAdapter& src) = delete;  // assignment operator
+  CmdAdapter(const CmdAdapter& src) = delete;              // copy constructor
 };
 
 #endif /* CMDADAPTER_H_ */

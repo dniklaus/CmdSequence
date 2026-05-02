@@ -26,11 +26,12 @@ protected:
    * @param name Name of the current command.
    * @param branchName Name of the branch command to jump to; if no branching is desired, provide an empty string ("").
    */
-  explicit Cmd(CmdSequence* cmdSeq, int32_t timeMicros, const char* name, const char* branchName) = delete;
+  explicit Cmd(CmdSequence* cmdSeq, int32_t timeMicros, const char* name, const char* branchName) = default;
 
 public:
   virtual ~Cmd();
 
+public:
   /**
    * @brief Assign the given Command Sequence object.
    * @details This Cmd object gets assigned to the given Command Sequence at the end of the linked list of Cmd objects held by the sequence. 
@@ -149,6 +150,11 @@ private:
   Cmd*          m_next;        /**< Pointer to the next command in the sequence. */
   Cmd*          m_branch;      /**< Pointer to the branch command, if any. */
   bool          m_doBranch;    /**< Flag indicating if branching shall happen. */
+
+private:
+  // Disable copy constructor and assignment operator
+  Cmd(const Cmd&) = delete;
+  Cmd& operator=(const Cmd&) = delete;
 };
 
 //-----------------------------------------------------------------------------

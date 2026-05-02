@@ -21,7 +21,10 @@ public:
     static const int32_t T1ms;  /**< time constant: 1ms */
     static const int32_t T1s;   /**< time constant: 1s */
 
+protected:
     explicit CmdSeqTimer() = default;
+    
+public:
     virtual ~CmdSeqTimer() { }
 
     /**
@@ -40,6 +43,11 @@ public:
      * @return true if the timer is expired, false otherwise
      */
     virtual bool isExpired() const = 0;
+
+private:
+    // Disable copy constructor and assignment operator
+    CmdSeqTimer(const CmdSeqTimer&) = delete;
+    CmdSeqTimer& operator=(const CmdSeqTimer&) = delete;
 };
 
 #endif

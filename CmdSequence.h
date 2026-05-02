@@ -20,7 +20,7 @@ public:
   static const int32_t WaitForever;   /**< wait "forever" */
   static const int32_t DoNotWait;     /**< do not wait */
 
-  CmdSequence();
+  CmdSequence() = default;
   virtual ~CmdSequence();
 
   /**
@@ -123,8 +123,8 @@ private:
   CmdSeqTimer*  m_timer;        /**< Pointer to the assigned sequence timer. */
 
 private: // forbidden default functions
-  CmdSequence& operator = (const CmdSequence& );  // assignment operator
-  CmdSequence(const CmdSequence& src);            // copy constructor
+  CmdSequence& operator = (const CmdSequence& ) = delete;  // assignment operator
+  CmdSequence(const CmdSequence& src) = delete;            // copy constructor
 };
 
 #endif /* CMDSEQUENCE_H_ */
