@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 option(BUILD_TESTING "Build unit tests" ON)
 
-set(PROJECT "pos")
+set(PROJECT "cmdsequence")
 project(${PROJECT} VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_C_STANDARD 11)
