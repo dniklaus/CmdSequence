@@ -16,11 +16,11 @@ TEST(Cmd_Test, BasicTest)
 TEST(Cmd_Test, MockTest)
 {
     TestCmdSeqTimer timer;
-    EXPECT_CALL(timer, start(1000)).Times(1);
+    EXPECT_CALL(timer, start(CmdSeqTimer::T1s)).Times(1);
     EXPECT_CALL(timer, cancel()).Times(1);
     EXPECT_CALL(timer, isExpired()).WillOnce(testing::Return(false));
 
-    timer.start(1000);
+    timer.start(CmdSeqTimer::T1s);
     timer.cancel();
     EXPECT_FALSE(timer.isExpired());
 }
